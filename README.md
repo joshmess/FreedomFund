@@ -1,4 +1,4 @@
-# AADM-Freedom-Fund
+# FreedomFund
 
 Web scraping application developed by students at UGA for the AADM Freedom Fund.
 
@@ -9,7 +9,7 @@ Here’s a [link](https://docs.google.com/document/d/1ge8wgcUFPzQh9OQZC-WhiMtNgm
 ### Our goal is to:
 
 1. Scrape publicly available data from this [website](http://enigma.athensclarkecounty.com/photo/bookingreport.asp) every morning (on a timer)
-1. Process the scraped data into a Python Dictionary and import to an SQL database
+1. Process the scraped data into our MongoDB cluster
    - We will have two schema’s: one for user login and storing scraped data
 1. Create a Login Page and Home Page
    - Login Page.- We can keep it super basic for now, just email and password
@@ -25,7 +25,7 @@ Here’s a [link](https://docs.google.com/document/d/1ge8wgcUFPzQh9OQZC-WhiMtNgm
 1. Frontend: HTML/CSS and Bootstrap (Responsive Design ftw!)
 2. Backend: Python Flask
 3. Web Scrape: Python BeautifulSoup
-4. Database: SQL - likely SQLLite3 with Flask SQLAlchemy because it fits in really well with Flask
+4. Database: SQL - MongoDB
 
 ---
 
