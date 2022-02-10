@@ -11,6 +11,10 @@ acc_mids = []
 acc_names = []
 requests_session = requests.Session()
 
+client = pymongo.MongoClient("mongodb+srv://admin:admin@freedomfund.rbg4b.mongodb.net/aadm?retryWrites=true&w=majority")
+db = client.get_database('aadm')
+collections = db['jailed']
+
 def main():
     startTime = datetime.now()
     acc_soup = getSoup()
@@ -19,7 +23,9 @@ def main():
     addCharges_Base()
     print(datetime.now() - startTime)
     print(aadm_dic)
-    jailed.insert_many(aadm_dic)
+    
+    for mid, _ in aadm_dic.items():
+        collections.insert(aadm_dic[mid])
 
 
 # begin assembling skeleton of Dictionary
@@ -89,9 +95,8 @@ def addCharges_Thread(link):
                 'Charge Description': temp[i + 2],
                 'Bond Amount': temp[i + 3],
             })
-    print(mid + " qualifies")
+    
     return
 
 if __name__ == "__main__":
     main()
-    

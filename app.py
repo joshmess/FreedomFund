@@ -9,6 +9,7 @@ db = client.get_database('aadm')
 users = db.users
 jailed = db.jailed
 
+
 @app.route("/", methods=['post', 'get'])
 def index():
     message = ''
