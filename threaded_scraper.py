@@ -102,17 +102,17 @@ def addCharges_Loop(threaded_driver, mid, link):
             return
         else:
             aadm_dic[mid]['Charges'].append({
-                'Arresting Agency': temp[i].strip(),
-                'Grade of Charge': temp[i + 1],
-                'Charge Description': temp[i + 2],
-                'Bond Amount': temp[i + 3],
+                'Arresting_Agency': temp[i].strip(),
+                'Grade_of_Charge': temp[i + 1],
+                'Charge_Description': temp[i + 2],
+                'Bond_Amount': temp[i + 3],
             })
     print(mid + " qualifies")
 
     db = client.get_database('aadm')
     jailed = db.jailed
     post = aadm_dic[mid]
-    result = jailed.insert_one(post)
+    result = jailed.update_one(post, upsert=True)
     print(result.acknowledged)
 
 if __name__ == "__main__":
