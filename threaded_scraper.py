@@ -1,19 +1,23 @@
 from bs4 import BeautifulSoup as bs
+from pymongo import MongoClient
 from datetime import datetime
 import concurrent.futures
-import requests
-import pymongo
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import TimeoutException
+from selectorlib import Extractor
+import time
 import re
 
 aadm_dic = {}
 acc_links = []
 acc_mids = []
 acc_names = []
-requests_session = requests.Session()
-
-client = pymongo.MongoClient("mongodb+srv://admin:admin@freedomfund.rbg4b.mongodb.net/aadm?retryWrites=true&w=majority")
-db = client.get_database('aadm')
-collections = db['jailed']
+client = MongoClient("mongodb+srv://admin:admin@freedomfund.rbg4b.mongodb.net/aadm?retryWrites=true&w=majority")
 
 def main():
     startTime = datetime.now()
@@ -23,9 +27,6 @@ def main():
     addCharges_Base()
     print(datetime.now() - startTime)
     print(aadm_dic)
-    
-    for mid, _ in aadm_dic.items():
-        collections.insert(aadm_dic[mid])
 
 
 # begin assembling skeleton of Dictionary
@@ -35,7 +36,7 @@ def buildDictionary():
 
 def addMIDToDict(i, mid):
     aadm_dic[str(mid)] = {
-        'MID': mid,
+        '_id': mid,
         'Name': acc_names[i],
         'Url': acc_links[i],
         'Charges': []
@@ -59,9 +60,12 @@ def tag_comp(tag):
 
 # get content of base page
 def getSoup():
+    driver = webdriver.Chrome(ChromeDriverManager().install())
     acc_url = "http://enigma.athensclarkecounty.com/photo/jailcurrent.asp"
+    driver.get(acc_url)
+    soup = bs(driver.page_source, 'lxml')
     print("Finished getting lxml content")
-    return bs(requests_session.get(acc_url).content, 'lxml')
+    return soup
 
 def addCharges_Base():
     threads = 4
@@ -69,19 +73,27 @@ def addCharges_Base():
         executor.map(addCharges_Thread, acc_links)
 
 def addCharges_Thread(link):
-    charges_page = requests_session.get(link)
-    charges_soup = bs(charges_page.content, 'lxml')
+    try:
+        threaded_driver = webdriver.Chrome(ChromeDriverManager().install())
+
+        m = re.search("id=-(.+?)&", link)
+        mid = str(m.group(1))
+
+        threaded_driver.get(link)
+        WebDriverWait(threaded_driver, 120).until(EC.presence_of_element_located((By.ID, 'mrc_main_table')))
+    except TimeoutException:
+        print(mid + " Timed Out Waiting for Page to Load")
+        return
+    finally:
+        addCharges_Loop(threaded_driver, mid, link)
+
+def addCharges_Loop(threaded_driver, mid, link):
+    charges_soup = bs(threaded_driver.page_source, 'lxml')
+
     charges_table = charges_soup.find('tbody', id='mrc_main_table')
     charges_table_items = charges_table.find_all('td')
 
-    m = re.search("id=-(.+?)&", link)
-    mid = str(m.group(1))
-
     temp = list(map(lambda x: x.text, charges_table_items))
-
-    # temp is all individual charges
-    # 7 tds
-    # 
 
     for i in range(0, len(temp), 7):
         if (temp[i + 3] == "$0.00" or temp[i + 3] == "$" or temp[i + 3] == ""):
@@ -95,8 +107,13 @@ def addCharges_Thread(link):
                 'Charge Description': temp[i + 2],
                 'Bond Amount': temp[i + 3],
             })
-    
-    return
+    print(mid + " qualifies")
+
+    db = client.get_database('aadm')
+    jailed = db.jailed
+    post = aadm_dic[mid]
+    result = jailed.insert_one(post)
+    print(result.acknowledged)
 
 if __name__ == "__main__":
     main()
