@@ -4,7 +4,8 @@ import bcrypt
 
 app = Flask(__name__)
 app.secret_key = "testing"
-client = pymongo.MongoClient("mongodb+srv://admin:admin@freedomfund.rbg4b.mongodb.net/aadm?retryWrites=true&w=majority")
+client = pymongo.MongoClient(
+    "mongodb+srv://admin:admin@freedomfund.rbg4b.mongodb.net/aadm?retryWrites=true&w=majority")
 db = client.get_database('aadm')
 users = db.users
 jailed = db.jailed
@@ -18,10 +19,10 @@ def index():
     if request.method == "POST":
         user = request.form.get("fullname")
         email = request.form.get("email")
-        
+
         password1 = request.form.get("password1")
         password2 = request.form.get("password2")
-        
+
         user_found = users.find_one({"name": user})
         email_found = users.find_one({"email": email})
         if user_found:
@@ -37,20 +38,30 @@ def index():
             hashed = bcrypt.hashpw(password2.encode('utf-8'), bcrypt.gensalt())
             user_input = {'name': user, 'email': email, 'password': hashed}
             users.insert_one(user_input)
-            
+
             user_data = users.find_one({"email": email})
             new_email = user_data['email']
-   
+
             return render_template('logged_in.html', email=new_email)
     return render_template('index.html')
+
 
 @app.route('/logged_in')
 def logged_in():
     if "email" in session:
         email = session["email"]
-        return render_template('logged_in.html', email=email)
+        print('hello')
+
+        cursor = jailed.find({})
+        candidates = []
+
+        for doc in cursor:
+            candidates.append(doc)
+
+        return render_template('logged_in.html', email=email, candidates=candidates)
     else:
         return redirect(url_for("login"))
+
 
 @app.route("/login", methods=["POST", "GET"])
 def login():
@@ -62,12 +73,12 @@ def login():
         email = request.form.get("email")
         password = request.form.get("password")
 
-       
         email_found = users.find_one({"email": email})
+        print(email_found)
         if email_found:
             email_val = email_found['email']
             passwordcheck = email_found['password']
-            
+
             if bcrypt.checkpw(password.encode('utf-8'), passwordcheck):
                 session["email"] = email_val
                 return redirect(url_for('logged_in'))
@@ -81,6 +92,7 @@ def login():
             return render_template('login.html', message=message)
     return render_template('login.html', message=message)
 
+
 @app.route("/logout", methods=["POST", "GET"])
 def logout():
     if "email" in session:
@@ -89,6 +101,7 @@ def logout():
     else:
         return render_template('index.html')
 
-#end of code to run it
+
+# end of code to run it
 if __name__ == "__main__":
-  app.run(debug=True)
+    app.run(debug=True)
