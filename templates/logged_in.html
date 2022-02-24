@@ -13,16 +13,18 @@ block content %}
       <th scope="col">Name</th>
     </tr>
   </thead>
-  {% for jailed in candidates %}
-  <tr>
-    <th scope="row">{{ jailed._id }}</th>
-    <td>
-      <a href="{{ jailed.Url }}" target="_blank" class="link-primary"
-        >{{ jailed.Name }}</a
-      >
-    </td>
-  </tr>
-  {% endfor %}
+  <tbody id="myTable">
+    {% for jailed in candidates %}
+    <tr>
+      <th scope="row">{{ jailed._id }}</th>
+      <td>
+        <a href="{{ jailed.Url }}" target="_blank" class="link-primary"
+          >{{ jailed.Name }}</a
+        >
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
 </table>
 
 {% endblock %}

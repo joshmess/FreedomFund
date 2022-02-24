@@ -36,6 +36,7 @@
         </div>
       </div>
     </nav>
+    {% block content %}{% endblock %}
 
     <script
       src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
@@ -57,7 +58,15 @@
       integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
       crossorigin="anonymous"
     ></script>
-
-    {% block content %}{% endblock %}
+    <script>
+      $(document).ready(function () {
+        $("#myInput").on("keyup", function () {
+          var value = $(this).val().toLowerCase();
+          $("#myTable tr").filter(function () {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+          });
+        });
+      });
+    </script>
   </body>
 </html>
