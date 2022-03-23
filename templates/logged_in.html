@@ -7,7 +7,6 @@
 <input class="form-control" id="myInput" type="text" placeholder="Search.." />
 <br />
 <table class="table table-condensed" style="border-collapse: collapse">
-  {% for jailed in candidates%}
   <thead>
     <tr>
       <th scope="col">ID</th>
@@ -16,6 +15,7 @@
     </tr>
   </thead>
   <tbody>
+    {% for jailed in candidates%}
     <tr
       data-toggle="collapse"
       data-target="#charges-table{{jailed._id}}"
@@ -55,7 +55,7 @@
         </div>
       </td>
     </tr>
+    {% endfor %}
   </tbody>
-  {% endfor %}
 </table>
 {% endblock %}
