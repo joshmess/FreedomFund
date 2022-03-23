@@ -35,8 +35,8 @@
               <th scope="col">Charge Description</th>
               <th scope="col">Bond Amount</th>
             </thead>
-            {% for charge in jailed.Charges %}
             <tbody>
+              {% for charge in jailed.Charges %}
               <tr>
                 <td>{{ charge.Arresting_Agency}}</td>
               </tr>
@@ -49,8 +49,8 @@
               <tr>
                 <td>{{ charge.Bond_Amount}}</td>
               </tr>
+              {% endfor %}
             </tbody>
-            {% endfor %}
           </table>
         </div>
       </td>
