@@ -112,7 +112,7 @@ def addCharges_Loop(threaded_driver, mid, link):
     db = client.get_database('aadm')
     jailed = db.jailed
     post = aadm_dic[mid]
-    result = jailed.update_one(post, upsert=True)
+    result = jailed.insert_one(post)
     print(result.acknowledged)
 
 if __name__ == "__main__":
