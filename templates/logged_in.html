@@ -13,7 +13,7 @@ block content %}
       <th scope="col">Name</th>
     </tr>
   </thead>
-  <tbody>
+  <tbody id="myTable">
     {% for jailed in candidates%}
     <tr
       data-toggle="collapse"
@@ -21,7 +21,12 @@ block content %}
       class="accordion-toggle"
     >
       <td>{{ jailed._id }}</td>
-      <td><a href="{{ jailed.Url }}">{{ jailed.Name }}</a></td>
+      <td>
+        <a href="{{ jailed.Url }}" target="_blank" rel="noreferrer noopener"
+          >{{ jailed.Name }}</a
+        >
+      </td>
+      <td><button class="accordion"></button></td>
     </tr>
     <tr>
       <td colspan="6" class="hiddenRow">
