@@ -11,7 +11,6 @@ block content %}
     <tr>
       <th scope="col">ID</th>
       <th scope="col">Name</th>
-      <th scope="col">URL</th>
     </tr>
   </thead>
   <tbody>
@@ -22,8 +21,7 @@ block content %}
       class="accordion-toggle"
     >
       <td>{{ jailed._id }}</td>
-      <td>{{ jailed.Name }}</td>
-      <td><a href="{{ jailed.Url }}">URL</a></td>
+      <td><a href="{{ jailed.Url }}">{{ jailed.Name }}</a></td>
     </tr>
     <tr>
       <td colspan="6" class="hiddenRow">
@@ -39,14 +37,8 @@ block content %}
               {% for charge in jailed.Charges %}
               <tr>
                 <td>{{ charge.Arresting_Agency}}</td>
-              </tr>
-              <tr>
                 <td>{{ charge.Grade_of_Charge}}</td>
-              </tr>
-              <tr>
                 <td>{{ charge.Charge_Description}}</td>
-              </tr>
-              <tr>
                 <td>{{ charge.Bond_Amount}}</td>
               </tr>
               {% endfor %}
