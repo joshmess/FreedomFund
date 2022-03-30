@@ -28,30 +28,32 @@ block content %}
       </td>
       <td><button class="accordion"></button></td>
     </tr>
-    <tr>
-      <td colspan="6" class="hiddenRow">
-        <div class="accordian-body collapse" id="charges-table{{jailed._id}}">
-          <table class="table table-striped">
-            <thead>
-              <th scope="col">Arresting Agency</th>
-              <th scope="col">Grade of Charge</th>
-              <th scope="col">Charge Description</th>
-              <th scope="col">Bond Amount</th>
-            </thead>
-            <tbody>
-              {% for charge in jailed.Charges %}
-              <tr>
-                <td>{{ charge.Arresting_Agency}}</td>
-                <td>{{ charge.Grade_of_Charge}}</td>
-                <td>{{ charge.Charge_Description}}</td>
-                <td>{{ charge.Bond_Amount}}</td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-      </td>
-    </tr>
+    <div>
+      <tr>
+        <td colspan="6" class="hiddenRow">
+          <div class="accordian-body collapse" id="charges-table{{jailed._id}}">
+            <table class="table table-striped">
+              <thead>
+                <th scope="col">Arresting Agency</th>
+                <th scope="col">Grade of Charge</th>
+                <th scope="col">Charge Description</th>
+                <th scope="col">Bond Amount</th>
+              </thead>
+              <tbody>
+                {% for charge in jailed.Charges %}
+                <tr>
+                  <td>{{ charge.Arresting_Agency}}</td>
+                  <td>{{ charge.Grade_of_Charge}}</td>
+                  <td>{{ charge.Charge_Description}}</td>
+                  <td>{{ charge.Bond_Amount}}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </td>
+      </tr>
+    </div>
     {% endfor %}
   </tbody>
 </table>
