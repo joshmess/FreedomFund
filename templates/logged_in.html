@@ -1,37 +1,32 @@
-{% extends "base.html" %} {% block title %}Youv'e logged in {% endblock %} {%
-block content %}
+{% extends "base.html" %} {% block title %}You've logged in {% endblock %} 
+{%block content %}
 <p>Hello! You have Logged in as {{ email }}</p>
 
 <h2>Freedom Fund Database</h2>
 <p>Search the table for first names, last names or emails:</p>
 <input class="form-control" id="myInput" type="text" placeholder="Search.." />
 <br />
-<table class="table table-condensed" style="border-collapse: collapse">
-  <thead>
-    <tr>
-      <th scope="col">ID</th>
-      <th scope="col">Name</th>
-    </tr>
-  </thead>
-  <tbody id="myTable">
-    {% for jailed in candidates%}
-    <tr
-      data-toggle="collapse"
-      data-target="#charges-table{{jailed._id}}"
-      class="accordion-toggle"
-    >
-      <td>{{ jailed._id }}</td>
-      <td>
-        <a href="{{ jailed.Url }}" target="_blank" rel="noreferrer noopener"
-          >{{ jailed.Name }}</a
-        >
-      </td>
-      <td><button class="accordion"></button></td>
-    </tr>
-    <div>
-      <tr>
-        <td colspan="6" class="hiddenRow">
-          <div class="accordian-body collapse" id="charges-table{{jailed._id}}">
+{% for jailed in candidates %}
+<div id="jailedCard" class="card" style="width: 100%;">
+  <div class="card-body">
+    <div class="panel-group">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <div class="row">
+              <div class="col">
+                <a href={{ jailed.Url }}> {{jailed.Name}} </a>
+              </div>
+              <div class="col">
+                <p>{{ jailed._id }}</p>
+              </div>
+              <div class="col">
+                <button data-toggle="collapse" href="#collapse{{jailed._id}}" type="button" class="btn btn-secondary">See Charges</button>
+            </div>
+          </h4>
+        </div>
+        <div id="collapse{{jailed._id}}" class="panel-collapse collapse">
+          <div class="panel-body">
             <table class="table table-striped">
               <thead>
                 <th scope="col">Arresting Agency</th>
@@ -51,11 +46,10 @@ block content %}
               </tbody>
             </table>
           </div>
-        </td>
-      </tr>
+        </div>
+      </div>
     </div>
-    {% endfor %}
-  </tbody>
-</table>
-
+  </div>
+</div>
+{% endfor %}
 {% endblock %}
